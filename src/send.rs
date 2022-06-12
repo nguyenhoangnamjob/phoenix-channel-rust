@@ -8,6 +8,7 @@ use serde_json::json;
 use std::{collections::HashMap, str};
 use tokio::net::TcpStream;
 use tokio_tungstenite::{tungstenite::protocol::Message, MaybeTlsStream, WebSocketStream};
+use uuid::Uuid;
 
 use crate::{constants, message};
 
@@ -43,7 +44,7 @@ impl Send {
             topic,
             event: event.to_owned(),
             payload,
-            refer: "0".to_owned(),
+            refer: Uuid::new_v4().to_string(),
         };
 
         self.send_message(message).await;
@@ -54,7 +55,7 @@ impl Send {
             topic: "phoenix".to_owned(),
             event: "heartbeat".to_owned(),
             payload: HashMap::new(),
-            refer: "0".to_owned(),
+            refer: Uuid::new_v4().to_string(),
         };
 
         self.send_message(message).await;

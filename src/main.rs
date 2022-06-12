@@ -1,9 +1,10 @@
 use socket::Socket;
-use std::{collections::HashMap, io::stdin};
+use std::collections::HashMap;
 
 mod channel;
 mod constants;
 mod message;
+mod reply;
 mod send;
 mod socket;
 
@@ -13,13 +14,12 @@ async fn main() {
     socket.connect().await;
 
     let mut channel = socket.channel("message".to_string());
-    channel.join();
-
-    let mut line = String::new();
-    stdin().read_line(&mut line).unwrap();
+    channel.join().await;
 
     let mut payload = HashMap::new();
-    payload.insert("data".to_owned(), line);
+    payload.insert("data".to_string(), "Hello world".to_string());
 
-    channel.push("message:new".to_string(), payload);
+    channel.push("new_msg".to_string(), payload).await;
+
+    loop {}
 }
